@@ -21,7 +21,7 @@ class PostTest extends TestCase
         $response->assertRedirect();
     }
 
-    public function testCanNotStorePostIfNotRoleIsUser()
+    public function testCanNotStorePostIfRoleIsUser()
     {
         $user = User::factory()->create();
         $post = Post::factory()->for($user)->create(['image' => UploadedFile::fake()->image($this->faker->word())]);

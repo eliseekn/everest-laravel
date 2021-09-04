@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
@@ -28,4 +29,5 @@ Route::get('post/{post}', [PostController::class, 'show'])->name('post.show');
 Route::middleware(['auth', 'role'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index']);
     Route::resource('post', PostController::class)->only(['store', 'destroy', 'update']);
+    Route::resource('post.comment', CommentController::class)->only(['store', 'destroy']);
 });
