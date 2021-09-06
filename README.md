@@ -8,5 +8,6 @@ On your console
 
 ```
 make tests
+php artisan migrate
 php artisan serve
 ```
