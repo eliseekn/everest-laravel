@@ -18,7 +18,7 @@ class CheckUserRoleIsAdmin
     public function handle(Request $request, Closure $next)
     {
         if ($request->user()->role !== User::ROLE_ADMIN) {
-            abort('403');
+            abort('403', 'Access forbidden');
         }
 
         return $next($request);

@@ -77,7 +77,7 @@ class PostTest extends TestCase
 
         $this->actingAs($user)->post(route('post.store'), $post->toArray());
 
-        $response = $this->get(route('post.show', $post->id));
+        $response = $this->get(route('post.show', $post->slug));
         $response->assertOk();
     }
 }

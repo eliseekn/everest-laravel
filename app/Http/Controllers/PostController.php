@@ -5,24 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use Exception;
 
 class PostController extends Controller
 {
-    public function show()
+    public function show(string $slug)
     {
-        return view('post');
+        $post = Post::where('slug', $slug)->first();
+
+        return view('post', compact('post'));
     }
 
     public function store(StorePostRequest $storePostRequest)
     {
+        $image = $storePostRequest->file('image');
+        $image->move(storage_path('app/public'), $image->getClientOriginalName());
+
+        $data = $storePostRequest->validated();
+        $data['image'] = $image->getClientOriginalName();
+
         $post = new Post();
-        $post->fill($storePostRequest->validated());
+        $post->fill($data);
         $post->user_id = $storePostRequest->user()->id;
         $post->setSlug();
         $post->save();
-
-        $image = $storePostRequest->file('image');
-        $image->move(storage_path('app/public'));
 
         return back()->with('success', 'Post has been created successfully');
     }
@@ -41,7 +47,13 @@ class PostController extends Controller
 
     public function destroy(int $id)
     {
-        Post::where('id', $id)->delete();
+        $post = Post::find($id);
+        
+        try {
+            unlink(storage_path("app/public/{$post->image}"));
+        } catch (Exception $e) {}
+
+        $post->delete();
 
         return back()->with('success', 'Post has been deleted successfully');
     }
